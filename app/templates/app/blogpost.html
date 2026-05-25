@@ -1,0 +1,86 @@
+﻿{% extends "app/layout.html" %}
+{% load static %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block content %}
+{% if article.image %}
+<div class="text-center" style="margin-bottom: 20px;">
+    <img src="{{ article.image.url }}" alt="{{ article.title }}" class="img-responsive" style="max-height: 400px; margin: 0 auto;">
+</div>
+{% endif %}
+<div class="blog-post-full">
+    <h1 class="blog-post-full-title">{{ article.title }}</h1>
+
+    <p class="blog-post-full-meta">
+        <strong>Дата публикации:</strong> {{ article.published_date|date:"d.m.Y H:i" }}
+        {% if article.author %}
+        | <strong>Автор:</strong> {{ article.author.username }}
+        {% endif %}
+    </p>
+
+    <div class="blog-post-full-content">
+        <p>{{ article.full_content|linebreaks }}</p>
+    </div>
+
+    <div class="comments-section">
+        <h3>Комментарии ({{ comments.count }})</h3>
+        <hr>
+
+        {% if user.is_authenticated %}
+        <div class="comment-form panel panel-success">
+            <div class="panel-heading">
+                <h4 class="panel-title">Оставить комментарий</h4>
+            </div>
+            <div class="panel-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        {{ form.text }}
+                        {% if form.text.errors %}
+                        <span class="help-block text-danger">{{ form.text.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="btn btn-success">Отправить комментарий</button>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <p>Чтобы оставить комментарий, пожалуйста, <a href="{% url 'login' %}?next={{ request.path }}">войдите</a> или <a href="{% url 'register' %}">зарегистрируйтесь</a>.</p>
+        </div>
+        {% endif %}
+
+        <div class="comments-list">
+            {% if comments %}
+            {% for comment in comments %}
+            <div class="comment-item" id="comment-{{ comment.id }}">
+                <div class="comment-header">
+                    <strong class="comment-author">{{ comment.author.username }}</strong>
+                    <span class="comment-date">{{ comment.date|date:"d.m.Y H:i" }}</span>
+                </div>
+                <div class="comment-body">
+                    <p>{{ comment.text|linebreaks }}</p>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="alert alert-info">
+                <p>Пока нет комментариев. Будьте первым!</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="blog-post-full-nav">
+        <a href="{% url 'blog' %}" class="btn btn-primary">
+            &larr; Назад к списку статей
+        </a>
+        <a href="{% url 'home' %}" class="btn btn-default">
+            На главную
+        </a>
+    </div>
+</div>
+{% endblock %}

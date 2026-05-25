@@ -1,0 +1,42 @@
+﻿{% extends "app/layout.html" %}
+{% load static %}
+
+{% block title %}Полезные ресурсы{% endblock %}
+
+{% block content %}
+<h1>Полезные ресурсы</h1>
+<p>Рекомендуемые веб-сайты по теме веб-разработки и Django:</p>
+
+<div class="row">
+    <div class="col-md-4" style="text-align: center; margin-bottom: 30px;">
+        <a href="https://www.djangoproject.com/" target="_blank" rel="noopener noreferrer">
+            <img src="https://www.djangoproject.com/m/img/logos/django-logo-positive.png"
+                 alt="Django Logo"
+                 style="width: 200px; height: auto; border: 1px solid #ddd; border-radius: 10px; padding: 10px;">
+        </a>
+        <h3>Django</h3>
+        <p>Официальный сайт Django. Документация, новости и сообщество.</p>
+    </div>
+
+    <div class="col-md-4" style="text-align: center; margin-bottom: 30px;">
+        <a href="https://www.python.org/" target="_blank" rel="noopener noreferrer">
+            <img src="https://www.python.org/static/img/python-logo.png"
+                 alt="Python Logo"
+                 style="width: 200px; height: auto; border: 1px solid #ddd; border-radius: 10px; padding: 10px;">
+        </a>
+        <h3>Python</h3>
+        <p>Официальный сайт Python. Документация, загрузки и новости языка.</p>
+    </div>
+
+    <div class="col-md-4" style="text-align: center; margin-bottom: 30px;">
+        <a href="https://github.com/" target="_blank" rel="noopener noreferrer">
+            <img src="https://github.githubassets.com/favicons/favicon.svg"
+                 alt="GitHub"
+                 style="width: 80px; height: auto; border: 1px solid #ddd; border-radius: 10px; padding: 10px;">
+        </a>
+        <h3>GitHub</h3>
+        <p>Платформа для хостинга IT-проектов и совместной разработки.</p>
+    </div>
+</div>
+
+{% endblock %}

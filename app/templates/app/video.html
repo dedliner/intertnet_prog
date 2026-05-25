@@ -1,0 +1,43 @@
+﻿{% extends "app/layout.html" %}
+{% load static %}
+
+{% block title %}Видео{% endblock %}
+
+{% block content %}
+<h1 class="text-center">Видеофрагменты</h1>
+<hr>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>Видео 1: Введение в Django</h4>
+            </div>
+            <div class="panel-body">
+                <video width="100%" controls>
+                    <source src="/media/videos/video1.mp4" type="video/mp4">
+                    Ваш браузер не поддерживает видео.
+                </video>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>Видео 2: Основы Bootstrap</h4>
+            </div>
+            <div class="panel-body">
+                <video width="100%" controls>
+                    <source src="/media/videos/video2.mp4" type="video/mp4">
+                    Ваш браузер не поддерживает видео.
+                </video>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center">
+    <a href="{% url 'home' %}" class="btn btn-default">На главную</a>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+﻿{% extends "app/layout.html" %}
+
+{% block title %}Вход на сайт{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Вход на сайт</h3>
+            </div>
+            <div class="panel-body">
+
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="id_username">Имя пользователя</label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                        <span class="help-block text-danger">{{ form.username.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_password">Пароль</label>
+                        {{ form.password }}
+                        {% if form.password.errors %}
+                        <span class="help-block text-danger">{{ form.password.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="btn btn-success btn-block">Войти</button>
+                </form>
+            </div>
+            <div class="panel-footer">
+                Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const usernameField = document.getElementById('id_username');
+    const passwordField = document.getElementById('id_password');
+    if (usernameField) usernameField.className = 'form-control';
+    if (passwordField) passwordField.className = 'form-control';
+</script>
+{% endblock %}

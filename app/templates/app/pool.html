@@ -1,0 +1,258 @@
+﻿{% extends "app/layout.html" %}
+{% load static %}
+
+{% block title %}Обратная связь{% endblock %}
+
+{% block content %}
+<h1>Обратная связь</h1>
+<p>Пожалуйста, оцените наш сайт и оставьте свои пожелания. Ваше мнение важно для нас!</p>
+
+<hr>
+
+{% if submitted %}
+<div class="alert alert-success" role="alert">
+    <h2>Спасибо за ваш отзыв!</h2>
+    <p>Мы ценим ваше мнение и учтем все пожелания для улучшения сайта.</p>
+</div>
+
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <h3 class="panel-title">Ваши данные:</h3>
+    </div>
+    <div class="panel-body">
+        <p><strong>Имя:</strong> {{ data.name }}</p>
+        <p><strong>Email:</strong> {{ data.email }}</p>
+        <p><strong>Оценка сайта:</strong> {{ data.rating }}</p>
+        <p><strong>Что понравилось:</strong> {{ data.like_options|join:", "|default:"Не указано" }}</p>
+        <p><strong>Частота посещения:</strong> {{ data.visit_frequency }}</p>
+        <p><strong>Пожелания:</strong> {{ data.suggestions|linebreaks }}</p>
+    </div>
+</div>
+
+<a href="{% url 'feedback' %}" class="btn btn-primary">Заполнить новый отзыв</a>
+<a href="{% url 'home' %}" class="btn btn-default">Вернуться на главную</a>
+
+{% else %}
+<form method="post">
+    {% csrf_token %}
+
+    <div class="form-group {% if form.name.errors %}has-error{% endif %}">
+        <label>{{ form.name.label }} <span class="text-danger">*</span></label>
+        {{ form.name }}
+        {% if form.name.errors %}<span class="help-block">{{ form.name.errors.0 }}</span>{% endif %}
+    </div>
+
+    <div class="form-group {% if form.email.errors %}has-error{% endif %}">
+        <label>{{ form.email.label }} <span class="text-danger">*</span></label>
+        {{ form.email }}
+        {% if form.email.errors %}<span class="help-block">{{ form.email.errors.0 }}</span>{% endif %}
+    </div>
+
+    <div class="form-group">
+        <label>{{ form.rating.label }} <span class="text-danger">*</span></label><br>
+        {% for radio in form.rating %}
+        <label class="radio-inline">{{ radio.tag }} {{ radio.choice_label }}</label>
+        {% endfor %}
+    </div>
+
+    <div class="form-group">
+        <label>{{ form.like_options.label }}</label><br>
+        {% for checkbox in form.like_options %}
+        <label class="checkbox-inline">{{ checkbox.tag }} {{ checkbox.choice_label }}</label>
+        {% endfor %}
+    </div>
+
+    <div class="form-group">
+        <label>{{ form.visit_frequency.label }}</label>
+        {{ form.visit_frequency }}
+    </div>
+
+    <div class="form-group">
+        <label>{{ form.suggestions.label }}</label>
+        {{ form.suggestions }}
+    </div>
+
+    <div class="form-group {% if form.consent.errors %}has-error{% endif %}">
+        <div class="checkbox">
+            <label>
+                {{ form.consent }} {{ form.consent.label }} <span class="text-danger">*</span>
+            </label>
+        </div>
+        {% if form.consent.errors %}
+        <span class="help-block">{{ form.consent.errors.0 }}</span>
+        {% endif %}
+    </div>
+
+    <button type="submit" class="btn btn-success">Отправить отзыв</button>
+    <button type="reset" class="btn btn-default">Очистить форму</button>
+</form>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const submitBtn = document.getElementById('submitBtn');
+
+        if (submitBtn) {
+            submitBtn.addEventListener('mouseenter', function() {
+                this.style.color = '#ffffff';     
+                this.style.backgroundColor = '#5cb85c';
+                this.style.borderColor = '#4cae4c';
+            });
+
+            submitBtn.addEventListener('mouseleave', function() {
+                this.style.color = '';             
+                this.style.backgroundColor = '';   
+                this.style.borderColor = '';
+            });
+        }
+
+        const inputFields = [
+            'id_name',
+            'id_email',
+            'id_suggestions'
+        ];
+
+        function addFocusEffect(element) {
+            if (element) {
+                element.addEventListener('focus', function() {
+                    this.style.backgroundColor = '#e8f0fe'; 
+                    this.style.transition = 'background-color 0.3s ease';
+                });
+
+                element.addEventListener('blur', function() {
+                    this.style.backgroundColor = '';  
+                });
+            }
+        }
+
+        inputFields.forEach(function(fieldId) {
+            const field = document.getElementById(fieldId);
+            addFocusEffect(field);
+        });
+
+        const selectField = document.getElementById('id_visit_frequency');
+        if (selectField) {
+            selectField.addEventListener('focus', function() {
+                this.style.backgroundColor = '#e8f0fe';
+                this.style.transition = 'background-color 0.3s ease';
+            });
+
+            selectField.addEventListener('blur', function() {
+                this.style.backgroundColor = '';
+            });
+        }
+
+        const consentCheckbox = document.getElementById('id_consent');
+        if (consentCheckbox) {
+            consentCheckbox.addEventListener('focus', function() {
+                this.parentElement.parentElement.style.backgroundColor = '#e8f0fe';
+                this.parentElement.parentElement.style.transition = 'background-color 0.3s ease';
+            });
+
+            consentCheckbox.addEventListener('blur', function() {
+                this.parentElement.parentElement.style.backgroundColor = '';
+            });
+        }
+
+        const radioButtons = document.querySelectorAll('input[type="radio"]');
+        radioButtons.forEach(function(radio) {
+            radio.addEventListener('focus', function() {
+                this.parentElement.style.backgroundColor = '#e8f0fe';
+                this.parentElement.style.padding = '5px';
+                this.parentElement.style.borderRadius = '5px';
+            });
+
+            radio.addEventListener('blur', function() {
+                this.parentElement.style.backgroundColor = '';
+                this.parentElement.style.padding = '';
+                this.parentElement.style.borderRadius = '';
+            });
+        });
+
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(function(checkbox) {
+            if (checkbox.id !== 'id_consent') {
+                checkbox.addEventListener('focus', function() {
+                    this.parentElement.style.backgroundColor = '#e8f0fe';
+                    this.parentElement.style.padding = '5px';
+                    this.parentElement.style.borderRadius = '5px';
+                });
+
+                checkbox.addEventListener('blur', function() {
+                    this.parentElement.style.backgroundColor = '';
+                    this.parentElement.style.padding = '';
+                    this.parentElement.style.borderRadius = '';
+                });
+            }
+        });
+
+        const textarea = document.getElementById('id_suggestions');
+        if (textarea) {
+            textarea.addEventListener('focus', function() {
+                this.style.backgroundColor = '#e8f0fe';
+                this.style.border = '2px solid #5cb85c';
+            });
+
+            textarea.addEventListener('blur', function() {
+                this.style.backgroundColor = '';
+                this.style.border = '';
+            });
+        }
+    });
+</script>
+
+<style>
+    #submitBtn {
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    input, select, textarea {
+        transition: background-color 0.3s ease, border 0.3s ease;
+    }
+
+    .radio-inline, .checkbox-inline {
+        transition: background-color 0.3s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+        outline: none;
+        box-shadow: 0 0 5px rgba(92, 184, 92, 0.5);
+    }
+
+    #submitBtn:hover {
+        transform: scale(1.02);
+    }
+
+    .checkbox-inline {
+        margin-right: 20px; 
+        padding: 5px 10px; 
+        border-radius: 5px; 
+    }
+
+    .radio-inline {
+        margin-right: 15px; 
+        padding: 5px 8px;
+        border-radius: 5px;
+    }
+
+    @media (max-width: 768px) {
+        .checkbox-inline {
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .radio-inline {
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+    }
+</style>
+{% endblock %}

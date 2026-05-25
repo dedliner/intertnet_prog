@@ -1,0 +1,43 @@
+﻿{% extends "app/layout.html" %}
+{% load static %}
+
+{% block title %}Блог{% endblock %}
+
+{% block content %}
+<div class="blog-header">
+    <h1>Блог</h1>
+    <p class="lead">Последние статьи и новости</p>
+</div>
+
+<hr>
+
+<div class="blog-list">
+    {% if articles %}
+    {% for article in articles %}
+    <div class="blog-post">
+        <h2 class="blog-post-title">
+            <a href="{% url 'blogpost' article.id %}" class="post-link">{{ article.title }}</a>
+        </h2>
+        <p class="blog-post-meta">
+            Опубликовано: {{ article.published_date|date:"d.m.Y H:i" }}
+            {% if article.author %}
+            | Автор: {{ article.author.username }}
+            {% endif %}
+        </p>
+        <p class="blog-post-short">{{ article.short_content|truncatewords:30 }}</p>
+        <a href="{% url 'blogpost' article.id %}" class="btn btn-primary btn-sm read-more">Читать далее &raquo;</a>
+    </div>
+    <hr>
+    {% endfor %}
+    {% else %}
+    <div class="alert alert-info">
+        <p>Статей пока нет. Зайдите в административный раздел и добавьте несколько статей.</p>
+        <a href="/admin/" class="btn btn-info">Перейти в админку</a>
+    </div>
+    {% endif %}
+</div>
+
+<div class="text-center">
+    <a href="{% url 'home' %}" class="btn btn-default">Вернуться на главную</a>
+</div>
+{% endblock %}
